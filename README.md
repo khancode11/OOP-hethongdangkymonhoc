@@ -134,10 +134,10 @@ main
 | Thành viên             | Công việc                                     |
 |------------------------| --------------------------------------------- |
 | Điêu Văn Khản (Leader) | Model Layer, Class Diagram, Tích hợp hệ thống |
-| Người 2                | Service Layer                                 |
+| Phạm Đức Nguyên        | Service Layer                                 |
 | Vũ Tiến Đạt            | Validator                                     |
-| Người 4                | Repository & File IO                          |
-| Người 5                | Main Program, Menu, Test Cases                |
+| Đào Minh Nghĩa         | Repository & File IO                          |
+| Bùi Việt Hùng          | Main Program, Menu, Test Cases                |
 
 ---
 
@@ -146,7 +146,7 @@ main
 1. Clone project:
 
 ```bash
-git clone <repository-url>
+git clone <https://github.com/khancode11/OOP-hethongdangkymonhoc.git>
 ```
 
 2. Mở project bằng IntelliJ IDEA.
