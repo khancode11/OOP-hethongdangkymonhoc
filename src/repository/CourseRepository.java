@@ -35,7 +35,8 @@ public class CourseRepository {
     public List<Course>findByLecturer(String lecturerId){
          if (lecturerId == null) return Collections.emptyList();
          return courseMap.values().stream()
-                 .
+                 .filter(c -> lecturerId.equals(c.getLecturer()))
+                 .collect(Collectors.toList());
     }
 
 }

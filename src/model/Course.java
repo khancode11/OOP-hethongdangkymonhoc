@@ -72,4 +72,5 @@ public class Course {
                 + " | " + schedule
                 + " | SL: " + enrolledStudents + "/" + maxStudents;
     }
+
 }
