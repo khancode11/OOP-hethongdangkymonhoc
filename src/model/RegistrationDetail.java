@@ -7,14 +7,14 @@ import java.util.List;
  * Phieu dang ky mon hoc cua 1 sinh vien
  * 1 sinh vien co 1 phieu dang ky, phieu do chua nhieu RegistrationDetail
  */
-class Registration {
+public class RegistrationDetail {
 
     private Student student;
 
     // Danh sach cac dong dang ky (moi dong = 1 mon)
-    private List<RegistrationDetail> details;
+    private List<Registration> details;
 
-    public Registration(Student student) {
+    public RegistrationDetail(Student student) {
         this.student = student;
         this.details = new ArrayList<>();
     }
@@ -22,26 +22,26 @@ class Registration {
     /**
      * Them 1 mon vao phieu dang ky
      */
-    public void addDetail(RegistrationDetail detail) {
+    public void addDetail(Registration detail) {
         details.add(detail);
     }
 
     /**
      * Xoa 1 mon khoi phieu dang ky theo courseId
      */
-    public void removeDetail(String courseId) {
-        details.removeIf(d -> d.getCourse().getCourseId().equals(courseId));
-    }
+//    public void removeDetail(String courseId) {
+//        details.removeIf(d -> d.getCourse().getCourseId().equals(courseId));
+//    }
 
     // Getters
     public Student getStudent()              { return student; }
-    public List<RegistrationDetail> getDetails() { return details; }
+    public List<Registration> getDetails() { return details; }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Phieu dang ky cua: ").append(student.getFullName()).append("\n");
-        for (RegistrationDetail d : details) {
+        for (Registration d : details) {
             sb.append("  - ").append(d).append("\n");
         }
         return sb.toString();
