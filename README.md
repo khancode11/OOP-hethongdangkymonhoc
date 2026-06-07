@@ -111,12 +111,11 @@ Không cho phép:
 ```text
 main
 │
-└── develop
-     ├── DieuVanKhan
-     ├── PhamDucNguyen
-     ├── VuTienDat
-     ├── DaoMinhNghia
-     └── BuiVietHung
+├── DieuVanKhan
+├── PhamDucNguyen
+├── VuTienDat
+├── DaoMinhNghia
+└── BuiVietHung
 ```
 
 ### Quy trình làm việc
