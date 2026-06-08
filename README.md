@@ -171,4 +171,4 @@ src/main/Main.java
 ---
 
 ## Giảng viên hướng dẫn
-Thầy: Trần Đình Sơn Nam
+Thầy: Trần Đình Nam Sơn
