@@ -10,10 +10,10 @@ public class StudentRepository {
 
     // them / cap nhat
     public void save(Student student) {
-        if (student == null || student.getStudentId() == null) {
+        if (student == null || student.getId() == null) {
             throw new IllegalArgumentException("Student hoac studentId khong duoc null.");
         }
-        studentMap.put(student.getStudentId(), student);
+        studentMap.put(student.getId(), student);
     }
 
     // tim theo id
