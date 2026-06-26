@@ -1,5 +1,6 @@
 package validator;
 
+import exception.RegistrationException;
 import model.Course;
 import model.Student;
 
@@ -7,5 +8,5 @@ import model.Student;
 public interface CourseValidator {
 
     // Hàm kiểm tra điều kiện đăng ký
-    void validate(Student sinhVien, Course monHoc) throws Exception;
+    void validate(Student sinhVien, Course monHoc) throws RegistrationException;
 }

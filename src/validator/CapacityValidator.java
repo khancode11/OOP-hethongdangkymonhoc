@@ -1,5 +1,7 @@
 package validator;
 
+import exception.CourseFullException;
+import exception.RegistrationException;
 import model.Course;
 import model.Student;
 
@@ -7,11 +9,10 @@ import model.Student;
 public class CapacityValidator implements CourseValidator {
 
     @Override
-    public void validate(Student sinhVien, Course monHoc) throws Exception {
-
+    public void validate(Student sinhVien, Course monHoc) throws RegistrationException {
         // Nếu môn học đã đủ số lượng sinh viên thì báo lỗi
         if (!monHoc.hasAvailableSlot()) {
-            throw new Exception("Không thể đăng ký. Môn học đã đủ số lượng sinh viên!");
+            throw new CourseFullException();
         }
     }
 }
