@@ -1,5 +1,7 @@
 package validator;
 
+import exception.RegistrationException;
+import exception.ScheduleConflictException;
 import model.Course;
 import model.Student;
 
@@ -7,17 +9,14 @@ import model.Student;
 public class ScheduleConflictValidator implements CourseValidator {
 
     @Override
-    public void validate(Student sinhVien, Course monHocMoi) throws Exception {
+    public void validate(Student sinhVien, Course monHocMoi) throws RegistrationException {
 
         // Duyệt qua từng môn sinh viên đã đăng ký
         for (Course monHocDaDangKy : sinhVien.getRegisteredCourses()) {
 
             // Nếu lịch môn đã đăng ký trùng với lịch môn mới thì báo lỗi
             if (monHocDaDangKy.getSchedule().isConflict(monHocMoi.getSchedule())) {
-                throw new Exception(
-                        "Không thể đăng ký. Môn học bị trùng lịch với môn: "
-                                + monHocDaDangKy.getCourseName()
-                );
+                throw new ScheduleConflictException(monHocDaDangKy.getCourseName());
             }
         }
     }

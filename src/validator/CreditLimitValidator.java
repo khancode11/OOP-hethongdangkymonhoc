@@ -1,5 +1,7 @@
 package validator;
 
+import exception.CreditLimitExceededException;
+import exception.RegistrationException;
 import model.Course;
 import model.Student;
 
@@ -7,13 +9,14 @@ import model.Student;
 public class CreditLimitValidator implements CourseValidator {
 
     @Override
-    public void validate(Student sinhVien, Course monHoc) throws Exception {
+    public void validate(Student sinhVien, Course monHoc) throws RegistrationException {
+
         int tongTinChiHienTai = sinhVien.getTotalCredits();
         int tongTinChiSauKhiDangKy = tongTinChiHienTai + monHoc.getCredits();
 
         // Nếu tổng tín chỉ vượt quá giới hạn thì báo lỗi
         if (tongTinChiSauKhiDangKy > sinhVien.getMaxCredits()) {
-            throw new Exception("Không thể đăng ký. Tổng số tín chỉ vượt quá giới hạn cho phép!");
+            throw new CreditLimitExceededException();
         }
     }
 }
