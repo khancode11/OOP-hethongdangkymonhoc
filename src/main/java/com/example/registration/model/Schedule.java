@@ -1,4 +1,4 @@
-package model;
+package com.example.registration.model;
 
 /**
  * Lịch học của một môn học

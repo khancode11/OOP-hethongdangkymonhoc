@@ -1,4 +1,4 @@
-package model;
+package com.example.registration.model;
 
 /**
  * Mot dong trong phieu dang ky = 1 mon hoc cu the

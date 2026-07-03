@@ -1,175 +1,60 @@
-# Hệ Thống Đăng Ký Môn Học Cho Sinh Viên
+# Hệ Thống Đăng Ký Môn Học Cho Sinh Viên (Phiên bản Web REST API & Spring Boot)
 
 ## Giới thiệu
 
-Đây là dự án cuối kỳ môn Lập Trình Hướng Đối Tượng (OOP) được xây dựng bằng Java.
+Đây là dự án cuối kỳ môn Lập Trình Hướng Đối Tượng (OOP) nâng cao, được phát triển từ nền tảng Java OOP thuần và nâng cấp lên kiến trúc hệ thống Web sử dụng **Spring Boot (Backend)** kết hợp với **HTML5/JavaScript (Frontend)**.
 
-Hệ thống mô phỏng quy trình đăng ký môn học của sinh viên trong một học kỳ. Sinh viên có thể xem danh sách môn học đang mở, đăng ký môn học, hủy môn học đã đăng ký và theo dõi tổng số tín chỉ hiện tại.
+Hệ thống mô phỏng quy trình đăng ký môn học trực tuyến của sinh viên trong một học kỳ. Sinh viên tương tác trực tiếp trên giao diện Web để xem danh sách môn học, đăng ký, hủy môn và theo dõi tiến độ tín chỉ theo thời gian thực (Real-time).
 
 ---
 
 ## Chức năng chính
 
-### Quản lý sinh viên
+### Giao diện Sinh viên (Frontend Web UI)
+* **Môn học**: Xem danh sách các môn học đang mở kèm sĩ số, lịch học, trạng thái còn chỗ/hết chỗ; tìm kiếm môn học trực quan.
+* **Đăng ký**: Nhập Mã SV + Mã môn để đăng ký môn học trực tuyến. Hệ thống tự động kiểm tra điều kiện nghiệp vụ và báo lỗi trực tiếp trên giao diện nếu vi phạm.
+* **Môn của tôi**: Xem danh sách các môn đã đăng ký thành công của cá nhân và thanh tiến độ tổng số tín chỉ tích lũy (Credit Progress Bar).
 
-* Xem danh sách môn học đang mở.
-* Đăng ký môn học.
-* Hủy môn học đã đăng ký.
-* Xem danh sách môn học đã đăng ký.
-* Xem tổng số tín chỉ hiện tại.
-
-### Quản lý môn học
-
-* Hiển thị danh sách môn học.
-* Tìm kiếm môn học theo mã hoặc tên môn học.
-* Kiểm tra môn học còn chỗ hay không.
-
-### Đăng ký môn học
-
-Hệ thống kiểm tra:
-
-* Môn học có tồn tại hay không.
-* Môn học còn chỗ hay không.
-* Sinh viên đã đăng ký môn học trước đó chưa.
-* Có vượt quá số tín chỉ tối đa hay không.
-* Có bị trùng lịch học hay không.
-
-### Hủy đăng ký môn học
-
-* Hủy môn học đã đăng ký.
-* Cập nhật lại số lượng sinh viên của môn học.
+### Hệ thống Quản lý và Nghiệp vụ (Backend REST API)
+* Đọc/Ghi và đồng bộ dữ liệu sinh viên, môn học lâu dài thông qua các file văn bản cơ sở (`students.txt`, `courses.txt`).
+* Kiểm tra toàn diện các ràng buộc logic chặt chẽ (Validations):
+    * Môn học có tồn tại trên hệ thống hay không.
+    * Lớp học còn chỗ (Sĩ số < Số lượng tối đa) hay không.
+    * Sinh viên đã đăng ký môn học này trước đó chưa.
+    * Kiểm tra vượt quá giới hạn số tín chỉ tối đa (`maxCredits`) cấu hình riêng cho từng sinh viên.
+    * Kiểm tra trùng lịch học dựa trên thuật toán so khớp khoảng tiết học (`Schedule.isConflict`).
 
 ---
 
 ## Công nghệ sử dụng
 
-* Java
-* OOP (Object-Oriented Programming)
-* Collections Framework
-* Exception Handling
-* File IO
-* Git & GitHub
+* **Backend**: Java 17+, Spring Boot (REST Web Services, Dependency Injection, IoC Container)
+* **Build Tool**: Apache Maven
+* **Frontend**: HTML5, CSS3, JavaScript (Fetch API để giao tiếp dữ liệu asynchronous không cần tải lại trang)
+* **OOP & Clean Code**: Kế thừa (Inheritance), Đa hình xử lý lỗi ngoại lệ (Polymorphism Custom Exceptions), Collections Framework, File IO mã hóa UTF-8.
+* **Quản lý mã nguồn**: Git & GitHub
 
 ---
 
-## Cấu trúc Project
+## Cấu trúc Project thực tế (Maven Standard)
 
 ```text
-src
-├── model
-├── service
-├── repository
-├── validator
-├── utils
-├── exception
-└── main
-```
-
-### Mô tả package
-
-| Package    | Chức năng                  |
-| ---------- | -------------------------- |
-| model      | Chứa các lớp dữ liệu       |
-| service    | Xử lý nghiệp vụ            |
-| repository | Đọc/Ghi dữ liệu            |
-| validator  | Kiểm tra điều kiện đăng ký |
-| utils      | Các hàm hỗ trợ             |
-| exception  | Custom Exception           |
-| main       | Chương trình chạy chính    |
-
----
-
-## Các lớp chính
-
-### Model Layer
-
-* User
-* Student
-* Lecturer
-* Course
-* Schedule
-* Registration
-* RegistrationDetail
-
----
-
-## Yêu cầu nghiệp vụ
-
-Không cho phép:
-
-* Đăng ký môn học không tồn tại.
-* Đăng ký môn đã đủ số lượng.
-* Đăng ký trùng môn học.
-* Đăng ký vượt quá số tín chỉ tối đa.
-* Đăng ký môn học bị trùng lịch.
-* Hủy môn học chưa từng đăng ký.
-
----
-
-## Cấu trúc Git Branch
-
-```text
-main
-│
-└── develop
-     ├── DieuVanKhan
-     ├── PhamDucNguyen
-     ├── VuTienDat
-     ├── DaoMinhNghia
-     └── BuiVietHung
-```
-
-### Quy trình làm việc
-
-1. Tạo branch từ `develop`.
-2. Thực hiện chức năng được phân công.
-3. Commit và push lên branch cá nhân.
-4. Merge vào `develop`.
-5. Sau khi hoàn thành toàn bộ dự án, merge `develop` vào `main`.
-
----
-
-## Phân công công việc
-
-| Thành viên             | Công việc                                     |
-|------------------------| --------------------------------------------- |
-| Điêu Văn Khản (Leader) | Model Layer, Class Diagram, Tích hợp hệ thống |
-| Phạm Đức Nguyên        | Service Layer                                 |
-| Vũ Tiến Đạt            | Validator                                     |
-| Đào Minh Nghĩa         | Repository & File IO                          |
-| Bùi Việt Hùng          | Main Program, Menu, Test Cases                |
-
----
-
-## Cách chạy chương trình
-
-1. Clone project:
-
-```bash
-git clone <https://github.com/khancode11/OOP-hethongdangkymonhoc.git>
-```
-
-2. Mở project bằng IntelliJ IDEA.
-
-3. Chạy:
-
-```text
-src/main/Main.java
-```
-
-4. Sử dụng menu để thao tác với hệ thống.
-
----
-
-## Thành viên nhóm
-
-* Thành viên 1: Điêu Văn Khản
-* Thành viên 2: Phạm Đức Nguyên
-* Thành viên 3: Vũ Tiến Đạt
-* Thành viên 4: Đào Minh Nghĩa
-* Thành viên 5: Bùi Việt Huùng
-
----
-
-## Giảng viên hướng dẫn
-Thầy: Trần Đình Sơn Nam
+StudentRegistrationSystem
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── example/
+│       │           └── registration/
+│       │               ├── controller/  (Xử lý Rest Endpoints API)
+│       │               ├── exception/   (Chứa các Custom Exception)
+│       │               ├── model/       (Lớp dữ liệu thực thể OOP)
+│       │               ├── repository/  (Đọc/Ghi dữ liệu file .txt)
+│       │               ├── service/     (Xử lý logic nghiệp vụ xử lý phiếu)
+│       │               └── Main.java    (File chạy chính ứng dụng Spring Boot)
+│       └── resources/
+│           └── static/
+│               └── index.html (Giao diện Frontend ứng dụng Web)
+├── courses.txt  (Cơ sở dữ liệu lưu trữ môn học)
+├── students.txt (Cơ sở dữ liệu lưu trữ sinh viên)
+└── pom.xml      (Quản lý thư viện và dependencies của dự án)
