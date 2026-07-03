@@ -1,0 +1,10 @@
+23010131;Dieu Van Khan;IT-K23;Cong nghe thong tin;24
+SV002;Vu Tien Dat;IT-K23;Cong nghe thong tin;24
+SV003;Pham Duc Nguyen;IT-K23;Cong nghe thong tin;24
+SV004;Dao Minh Nghia;IT-K23;An toan thong tin;20
+SV005;Bui Viet Hung;IT-K23;Khoa hoc may tinh;24
+SV006;Nguyen Hoang Long;IT-K23;Cong nghe thong tin;15
+SV007;Tran Thi Mai;IS-K23;He thong thong tin;20
+SV008;Le Chinh Truong;SE-K23;Cong nghe phan mem;24
+SV009;Phan Van Duc;IT-K23;Cong nghe thong tin;28
+SV010;Hoang Ngoc Anh;AI-K23;Tri tue nhan tao;24

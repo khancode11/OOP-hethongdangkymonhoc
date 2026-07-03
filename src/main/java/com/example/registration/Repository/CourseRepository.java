@@ -1,4 +1,4 @@
-package com.example.registration.Repository;
+package com.example.registration.repository;
 
 import com.example.registration.model.Course;
 import com.example.registration.model.Lecturer;
