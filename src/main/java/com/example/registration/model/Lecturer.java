@@ -1,4 +1,4 @@
-package model;
+package com.example.registration.model;
 
 /**
  * Giang vien - ke thua tu User

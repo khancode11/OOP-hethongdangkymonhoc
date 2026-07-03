@@ -1,4 +1,4 @@
-package model;
+package com.example.registration.model;
 
 /**
  * Mon hoc duoc mo trong hoc ky
