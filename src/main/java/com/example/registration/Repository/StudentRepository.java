@@ -1,4 +1,4 @@
-package com.example.registration.repository;
+package com.example.registration.Repository;
 
 import com.example.registration.model.Student;
 import org.springframework.stereotype.Repository;
