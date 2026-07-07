@@ -12,19 +12,11 @@ import java.util.List;
 @Repository
 public class CourseRepository {
     private final String FILE_PATH = "courses.txt";
-    private List<Course> courses;
 
     public List<Course> findAll() {
-        if (courses != null) {
-            return courses;
-        }
-
         List<Course> courses = new ArrayList<>();
         File file = new File(FILE_PATH);
-        if (!file.exists()) {
-            this.courses = courses;
-            return this.courses;
-        }
+        if (!file.exists()) return courses;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -51,8 +43,7 @@ public class CourseRepository {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.courses = courses;
-        return this.courses;
+        return courses;
     }
 
     public void saveAll(List<Course> courses) {
@@ -69,7 +60,6 @@ public class CourseRepository {
                         s != null ? s.getEndPeriod() : 3));
                 bw.newLine();
             }
-            this.courses = courses;
         } catch (IOException e) {
             e.printStackTrace();
         }
