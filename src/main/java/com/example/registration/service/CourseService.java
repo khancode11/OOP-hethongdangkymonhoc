@@ -13,14 +13,6 @@ public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
 
-    public CourseService() {
-        this(new CourseRepository());
-    }
-
-    public CourseService(CourseRepository courseRepository) {
-        this.courseRepository = courseRepository;
-    }
-
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
@@ -40,15 +32,5 @@ public class CourseService {
                 .filter(c -> c.getCourseId().equals(courseId))
                 .findFirst()
                 .orElse(null);
-    }
-
-    public void displayCourses() {
-        List<Course> courses = getAllCourses();
-        if (courses.isEmpty()) {
-            System.out.println("Khong co mon hoc nao trong he thong.");
-            return;
-        }
-
-        courses.forEach(System.out::println);
     }
 }
