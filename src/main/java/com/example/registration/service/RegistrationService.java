@@ -4,12 +4,12 @@ import com.example.registration.exception.CourseNotFoundException;
 import com.example.registration.exception.CreditLimitException;
 import com.example.registration.exception.DuplicateRegistrationException;
 import com.example.registration.model.*;
-import com.example.registration.repository.CourseRepository;
 import com.example.registration.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -22,15 +22,6 @@ public class RegistrationService {
 
     // Lưu trữ phiếu đăng ký tổng của các sinh viên (Key: studentId)
     private final Map<String, RegistrationDetail> detailMap = new HashMap<>();
-
-    public RegistrationService() {
-        this(new CourseRepository(), new StudentRepository());
-    }
-
-    public RegistrationService(CourseRepository courseRepository, StudentRepository studentRepository) {
-        this.courseService = new CourseService(courseRepository);
-        this.studentRepository = studentRepository;
-    }
 
     public RegistrationDetail getRegistrationByStudent(String studentId) {
         return detailMap.computeIfAbsent(studentId, id -> {
@@ -49,10 +40,6 @@ public class RegistrationService {
         Course course = courseService.getCourseById(courseId);
         if (course == null) {
             throw new CourseNotFoundException("Không tìm thấy môn học với mã: " + courseId);
-        }
-
-        if (!course.hasAvailableSlot()) {
-            throw new CourseNotFoundException("Mon hoc da het cho: " + course.getCourseName());
         }
 
         RegistrationDetail detail = getRegistrationByStudent(studentId);
@@ -108,19 +95,5 @@ public class RegistrationService {
         if (!removed) {
             throw new CourseNotFoundException("Sinh viên chưa đăng ký môn học này.");
         }
-    }
-
-    public void displayRegistration(String studentId) {
-        RegistrationDetail detail = detailMap.get(studentId);
-        if (detail == null || detail.getDetails().isEmpty()) {
-            System.out.println("Sinh vien chua dang ky mon hoc nao.");
-            return;
-        }
-
-        System.out.println(detail);
-        int totalCredits = detail.getDetails().stream()
-                .mapToInt(r -> r.getCourse().getCredits())
-                .sum();
-        System.out.println("Tong tin chi: " + totalCredits + "/" + detail.getStudent().getMaxCredits());
     }
 }
