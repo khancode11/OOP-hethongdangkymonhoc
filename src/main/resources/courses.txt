@@ -1,0 +1,10 @@
+IT001;Lap trinh Huong doi tuong;4;50;0;2;1;3
+IT002;Co so du lieu;3;45;0;4;4;6
+IT003;Phat trien ung dung Web;3;40;0;5;7;9
+IT004;Cau truc du lieu va Giai thuat;4;35;0;3;1;4
+IT005;Mang may tinh;3;50;0;2;1;3
+IT006;Kien truc phan mem;3;30;0;6;4;6
+IT007;An toan bao mat thong tin;3;25;0;5;1;3
+IT008;Tri tue nhan tao co ban;4;40;0;4;7;10
+IT009;Dien toan dam may;3;2;2;6;1;3
+IT010;Nhap mon Data Science;3;50;0;3;7;9
