@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Hệ Thống Đăng Ký Môn Học - Nhóm 02</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #222; }
+
+        /* NAV */
+        nav { background: #1a56db; color: #fff; padding: 0 2rem; display: flex; align-items: center; gap: 2rem; height: 56px; }
+        nav h1 { font-size: 17px; font-weight: 600; }
+        nav .nav-links { display: flex; gap: .25rem; margin-left: auto; }
+        nav .nav-links button {
+            background: transparent; border: none; color: #bfdbfe;
+            padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 14px;
+            transition: background .15s;
+        }
+        nav .nav-links button:hover,
+        nav .nav-links button.active { background: rgba(255,255,255,.15); color: #fff; }
+
+        /* LAYOUT */
+        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* CARD */
+        .card { background: #fff; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+        .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 1rem; color: #1a56db; }
+
+        /* FORM */
+        .form-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 160px; }
+        label { font-size: 12px; color: #555; font-weight: 500; }
+        input, select {
+            padding: 8px 12px; border: 1.5px solid #d1d5db; border-radius: 7px;
+            font-size: 14px; outline: none; transition: border .15s;
+        }
+        input:focus, select:focus { border-color: #1a56db; }
+
+        /* BUTTONS */
+        .btn {
+            padding: 8px 18px; border: none; border-radius: 7px;
+            font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity .15s;
+            white-space: nowrap;
+        }
+        .btn:hover { opacity: .88; }
+        .btn-primary { background: #1a56db; color: #fff; }
+        .btn-danger  { background: #ef4444; color: #fff; }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-gray    { background: #e5e7eb; color: #374151; }
+
+        /* TABLE */
+        table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+        th { background: #f8faff; color: #374151; font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 2px solid #e5e7eb; }
+        td { padding: 9px 12px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        tr:hover td { background: #f8faff; }
+        .badge {
+            display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+        }
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-red   { background: #fee2e2; color: #991b1b; }
+
+        /* ALERT */
+        .alert {
+            padding: 10px 14px; border-radius: 8px; font-size: 13.5px;
+            margin-bottom: 1rem; display: none;
+        }
+        .alert.show { display: block; }
+        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* STAT CARDS */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; }
+        .stats .stat { background: #fff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); text-align: center; }
+        .stat .num { font-size: 28px; font-weight: 700; color: #1a56db; }
+        .stat .lbl { font-size: 12px; color: #6b7280; margin-top: 4px; }
+
+        /* EMPTY STATE */
+        .empty { text-align: center; padding: 2rem; color: #9ca3af; font-size: 14px; }
+
+        /* LOADING */
+        .loading { text-align: center; padding: 1.5rem; color: #6b7280; font-size: 14px; }
+
+        /* CREDIT BAR */
+        .credit-bar-wrap { background: #e5e7eb; border-radius: 10px; height: 8px; overflow: hidden; margin-top: 6px; }
+        .credit-bar { height: 100%; border-radius: 10px; background: #1a56db; transition: width .4s; }
+
+        .section-label { font-size: 12px; color: #6b7280; margin-bottom: 6px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h1>📚 Đăng Ký Môn Học — Nhóm 02</h1>
+    <div class="nav-links">
+        <button class="active" onclick="showPage('courses')">Môn học</button>
+        <button onclick="showPage('register')">Đăng ký</button>
+        <button onclick="showPage('my-courses')">Môn của tôi</button>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="page active" id="page-courses">
+        <div class="stats" id="stats-row">
+            <div class="stat"><div class="num" id="stat-total">—</div><div class="lbl">Tổng môn học</div></div>
+            <div class="stat"><div class="num" id="stat-available">—</div><div class="lbl">Còn chỗ</div></div>
+            <div class="stat"><div class="num" id="stat-full">—</div><div class="lbl">Hết chỗ</div></div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Danh Sách Môn Học</h2>
+            <div class="form-row" style="margin-bottom:1rem">
+                <div class="form-group">
+                    <label>Tìm kiếm theo tên môn</label>
+                    <input id="search-input" type="text" placeholder="Nhập tên môn học..." oninput="searchCourses()" />
+                </div>
+                <button class="btn btn-gray" onclick="loadCourses()">🔄 Tải lại</button>
+            </div>
+            <div id="courses-alert"></div>
+            <div id="courses-table"><div class="loading">Đang tải dữ liệu...</div></div>
+        </div>
+    </div>
+
+    <div class="page" id="page-register">
+        <div class="card">
+            <h2>✅ Đăng Ký Môn Học</h2>
+            <div id="reg-alert" class="alert"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Mã sinh viên</label>
+                    <input id="reg-student-id" type="text" placeholder="VD: SV001" />
+                </div>
+                <div class="form-group">
+                    <label>Mã môn học</label>
+                    <input id="reg-course-id" type="text" placeholder="VD: IT001" />
+                </div>
+                <button class="btn btn-success" onclick="registerCourse()">✅ Đăng ký</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>❌ Hủy Đăng Ký</h2>
+            <div id="cancel-alert" class="alert"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Mã sinh viên</label>
+                    <input id="cancel-student-id" type="text" placeholder="VD: SV001" />
+                </div>
+                <div class="form-group">
+                    <label>Mã môn học cần hủy</label>
+                    <input id="cancel-course-id" type="text" placeholder="VD: IT001" />
+                </div>
+                <button class="btn btn-danger" onclick="cancelCourse()">❌ Hủy đăng ký</button>
+            </div>
+        </div>
+
+        <div class="card" style="background:#fffbeb;border:1px solid #fcd34d">
+            <h2 style="color:#92400e">📌 Danh sách sinh viên mẫu</h2>
+            <table>
+                <thead><tr><th>Mã SV</th><th>Họ tên</th><th>Lớp</th><th>Tín chỉ tối đa</th></tr></thead>
+                <tbody id="students-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="page" id="page-my-courses">
+        <div class="card">
+            <h2>🎓 Xem Môn Đã Đăng Ký</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Mã sinh viên</label>
+                    <input id="my-student-id" type="text" placeholder="VD: SV001" />
+                </div>
+                <button class="btn btn-primary" onclick="loadMyCoures()">🔍 Xem</button>
+            </div>
+        </div>
+
+        <div id="my-courses-result" style="display:none">
+            <div class="card">
+                <h2 id="my-courses-name">Sinh viên</h2>
+                <div class="section-label">Tổng tín chỉ đã đăng ký</div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
+                    <span id="credit-text" style="font-size:18px;font-weight:700;color:#1a56db"></span>
+                    <div style="flex:1"><div class="credit-bar-wrap"><div class="credit-bar" id="credit-bar"></div></div></div>
+                </div>
+                <div id="my-courses-alert" class="alert"></div>
+                <div id="my-courses-table"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const API = 'http://localhost:8080/api';
+    let allCourses = [];
+
+    // ===== NAVIGATION =====
+    function showPage(name) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+        document.getElementById('page-' + name).classList.add('active');
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+
+        if (name === 'register') loadStudents();
+    }
+
+    // ===== ALERT =====
+    function showAlert(id, message, type) {
+        const el = document.getElementById(id);
+        el.textContent = message;
+        el.className = 'alert show alert-' + type;
+        setTimeout(() => el.classList.remove('show'), 4000);
+    }
+
+    // ===== PAGE 1: DANH SACH MON HOC =====
+    async function loadCourses() {
+        document.getElementById('courses-table').innerHTML = '<div class="loading">Đang tải...</div>';
+        try {
+            const res = await fetch(API + '/courses');
+            allCourses = await res.json();
+            renderCourses(allCourses);
+            updateStats(allCourses);
+        } catch (e) {
+            document.getElementById('courses-table').innerHTML =
+                '<div class="empty">❌ Không kết nối được server. Hãy chắc chắn Spring Boot đang chạy.</div>';
+        }
+    }
+
+    function updateStats(courses) {
+        document.getElementById('stat-total').textContent = courses.length;
+        document.getElementById('stat-available').textContent = courses.filter(c => c.enrolledStudents < c.maxStudents).length;
+        document.getElementById('stat-full').textContent = courses.filter(c => c.enrolledStudents >= c.maxStudents).length;
+    }
+
+    function renderCourses(courses) {
+        if (courses.length === 0) {
+            document.getElementById('courses-table').innerHTML = '<div class="empty">Không tìm thấy môn học nào</div>';
+            return;
+        }
+        let html = `<table>
+    <thead><tr>
+      <th>Mã môn</th><th>Tên môn học</th><th>Tín chỉ</th>
+      <th>Giảng viên</th><th>Lịch học</th><th>Sĩ số</th><th>Trạng thái</th>
+    </tr></thead><tbody>`;
+        for (const c of courses) {
+            const full = c.enrolledStudents >= c.maxStudents;
+            const sch = c.schedule;
+            const scheduleStr = sch ? `Thứ ${sch.dayOfWeek}, tiết ${sch.startPeriod}–${sch.endPeriod}` : '—';
+            html += `<tr>
+      <td><strong>${c.courseId}</strong></td>
+      <td>${c.courseName}</td>
+      <td style="text-align:center">${c.credits}</td>
+      <td>${c.lecturer ? c.lecturer.fullName : '—'}</td>
+      <td>${scheduleStr}</td>
+      <td style="text-align:center">${c.enrolledStudents}/${c.maxStudents}</td>
+      <td>${full
+                ? '<span class="badge badge-red">Hết chỗ</span>'
+                : '<span class="badge badge-green">Còn chỗ</span>'}</td>
+    </tr>`;
+        }
+        html += '</tbody></table>';
+        document.getElementById('courses-table').innerHTML = html;
+    }
+
+    function searchCourses() {
+        const keyword = document.getElementById('search-input').value.toLowerCase();
+        if (!keyword) { renderCourses(allCourses); return; }
+        const filtered = allCourses.filter(c =>
+            c.courseName.toLowerCase().includes(keyword) ||
+            c.courseId.toLowerCase().includes(keyword)
+        );
+        renderCourses(filtered);
+    }
+
+    // ===== PAGE 2: DANG KY =====
+    async function loadStudents() {
+        try {
+            const res = await fetch(API + '/students');
+            const students = await res.json();
+            let html = '';
+            for (const s of students) {
+                html += `<tr>
+        <td><strong>${s.id}</strong></td>
+        <td>${s.fullName}</td>
+        <td>${s.className}</td>
+        <td>${s.maxCredits} TC</td>
+      </tr>`;
+            }
+            document.getElementById('students-table-body').innerHTML = html || '<tr><td colspan="4">Không có dữ liệu</td></tr>';
+        } catch(e) {}
+    }
+
+    async function registerCourse() {
+        const studentId = document.getElementById('reg-student-id').value.trim();
+        const courseId  = document.getElementById('reg-course-id').value.trim();
+        if (!studentId || !courseId) {
+            showAlert('reg-alert', 'Vui lòng nhập đầy đủ mã sinh viên và mã môn học', 'error');
+            return;
+        }
+        try {
+            // Đã chỉnh sửa: Gửi theo đường dẫn /api/registration/{studentId}/register nhận dạng Restful
+            const res = await fetch(`${API}/registration/${studentId}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ courseId })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showAlert('reg-alert', '✅ ' + data.message, 'success');
+                loadCourses();
+            } else {
+                showAlert('reg-alert', '❌ ' + (data.error || data.message), 'error');
+            }
+        } catch(e) {
+            showAlert('reg-alert', '❌ Không kết nối được server', 'error');
+        }
+    }
+
+    async function cancelCourse() {
+        const studentId = document.getElementById('cancel-student-id').value.trim();
+        const courseId  = document.getElementById('cancel-course-id').value.trim();
+        if (!studentId || !courseId) {
+            showAlert('cancel-alert', 'Vui lòng nhập đầy đủ thông tin', 'error');
+            return;
+        }
+        try {
+            // Đã chỉnh sửa: Chuyển sang dùng method DELETE tới endpoint /{studentId}/cancel/{courseId}
+            const res = await fetch(`${API}/registration/${studentId}/cancel/${courseId}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showAlert('cancel-alert', '✅ ' + data.message, 'success');
+                loadCourses();
+            } else {
+                showAlert('cancel-alert', '❌ ' + (data.error || data.message), 'error');
+            }
+        } catch(e) {
+            showAlert('cancel-alert', '❌ Không kết nối được server', 'error');
+        }
+    }
+
+    // ===== PAGE 3: MON DA DANG KY =====
+    async function loadMyCoures() {
+        const studentId = document.getElementById('my-student-id').value.trim();
+        if (!studentId) return;
+        try {
+            const res = await fetch(API + '/registration/' + studentId);
+            const data = await res.json();
+            if (!res.ok) {
+                showAlert('my-courses-alert', '❌ ' + data.error, 'error');
+                return;
+            }
+
+            // Đã chỉnh sửa: Đọc chính xác cấu trúc Model gốc từ biến trả về của Spring Boot
+            const student = data.student;
+            const details = data.details || [];
+
+            document.getElementById('my-courses-result').style.display = 'block';
+            document.getElementById('my-courses-name').textContent =
+                `🎓 Môn đã đăng ký — Sinh viên: ${student ? student.fullName : studentId} (${studentId})`;
+
+            // Tính tổng tín chỉ hiện tại từ mảng details (RegistrationDetail -> List<Registration>)
+            let totalCredits = 0;
+            for(const row of details) {
+                if(row.course) totalCredits += row.course.credits;
+            }
+
+            const maxCredits = student ? student.maxCredits : 24;
+
+            document.getElementById('credit-text').textContent = totalCredits + '/' + maxCredits + ' tín chỉ';
+            document.getElementById('credit-bar').style.width = Math.min((totalCredits/maxCredits)*100, 100) + '%';
+            document.getElementById('credit-bar').style.background = totalCredits >= maxCredits ? '#ef4444' : '#1a56db';
+
+            if (details.length === 0) {
+                document.getElementById('my-courses-table').innerHTML =
+                    '<div class="empty">Chưa đăng ký môn học nào</div>';
+                return;
+            }
+
+            let html = `<table>
+      <thead><tr>
+        <th>Mã môn</th><th>Tên môn học</th><th>Tín chỉ</th>
+        <th>Giảng viên</th><th>Lịch học</th>
+      </tr></thead><tbody>`;
+
+            for (const row of details) {
+                const c = row.course;
+                if (!c) continue;
+                const sch = c.schedule;
+                const scheduleStr = sch ? `Thứ ${sch.dayOfWeek}, tiết ${sch.startPeriod}–${sch.endPeriod}` : '—';
+                html += `<tr>
+        <td><strong>${c.courseId}</strong></td>
+        <td>${c.courseName}</td>
+        <td style="text-align:center">${c.credits}</td>
+        <td>${c.lecturer ? c.lecturer.fullName : '—'}</td>
+        <td>${scheduleStr}</td>
+      </tr>`;
+            }
+            html += '</tbody></table>';
+            document.getElementById('my-courses-table').innerHTML = html;
+        } catch(e) {
+            showAlert('my-courses-alert', '❌ Không kết nối được server', 'error');
+        }
+    }
+
+    // ===== INIT =====
+    loadCourses();
+</script>
+</body>
+</html>

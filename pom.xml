@@ -28,19 +28,9 @@
 
     <build>
         <plugins>
-            <!-- Plugin hỗ trợ đóng gói ứng dụng Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <!-- Thêm cấu hình Compiler để giữ tên tham số (fix triệt để lỗi IllegalArgumentException) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <parameters>true</parameters>
-                </configuration>
             </plugin>
         </plugins>
     </build>
