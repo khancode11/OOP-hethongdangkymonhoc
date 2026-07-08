@@ -50,6 +50,7 @@
         .btn-danger  { background: #ef4444; color: #fff; }
         .btn-success { background: #10b981; color: #fff; }
         .btn-gray    { background: #e5e7eb; color: #374151; }
+        .btn-sm      { padding: 4px 10px; font-size: 12px; border-radius: 5px; }
 
         /* TABLE */
         table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
@@ -95,14 +96,14 @@
 <nav>
     <h1>📚 Đăng Ký Môn Học — Nhóm 02</h1>
     <div class="nav-links">
-        <button class="active" onclick="showPage('courses')">Môn học</button>
-        <button onclick="showPage('register')">Đăng ký</button>
+        <button class="active" onclick="showPage('courses')">Môn học & Đăng ký</button>
         <button onclick="showPage('my-courses')">Môn của tôi</button>
     </div>
 </nav>
 
 <div class="container">
 
+    <!-- PAGE 1: GỘP MÔN HỌC & ĐĂNG KÝ -->
     <div class="page active" id="page-courses">
         <div class="stats" id="stats-row">
             <div class="stat"><div class="num" id="stat-total">—</div><div class="lbl">Tổng môn học</div></div>
@@ -110,23 +111,9 @@
             <div class="stat"><div class="num" id="stat-full">—</div><div class="lbl">Hết chỗ</div></div>
         </div>
 
+        <!-- Form Đăng ký nhanh đặt ngay phía trên danh sách môn -->
         <div class="card">
-            <h2>📋 Danh Sách Môn Học</h2>
-            <div class="form-row" style="margin-bottom:1rem">
-                <div class="form-group">
-                    <label>Tìm kiếm theo tên môn</label>
-                    <input id="search-input" type="text" placeholder="Nhập tên môn học..." oninput="searchCourses()" />
-                </div>
-                <button class="btn btn-gray" onclick="loadCourses()">🔄 Tải lại</button>
-            </div>
-            <div id="courses-alert"></div>
-            <div id="courses-table"><div class="loading">Đang tải dữ liệu...</div></div>
-        </div>
-    </div>
-
-    <div class="page" id="page-register">
-        <div class="card">
-            <h2>✅ Đăng Ký Môn Học</h2>
+            <h2>✅ Đăng Ký Môn Học Nhanh</h2>
             <div id="reg-alert" class="alert"></div>
             <div class="form-row">
                 <div class="form-group">
@@ -142,19 +129,16 @@
         </div>
 
         <div class="card">
-            <h2>❌ Hủy Đăng Ký</h2>
-            <div id="cancel-alert" class="alert"></div>
-            <div class="form-row">
+            <h2>📋 Danh Sách Môn Học</h2>
+            <div class="form-row" style="margin-bottom:1rem">
                 <div class="form-group">
-                    <label>Mã sinh viên</label>
-                    <input id="cancel-student-id" type="text" placeholder="VD: SV001" />
+                    <label>Tìm kiếm theo tên môn</label>
+                    <input id="search-input" type="text" placeholder="Nhập tên môn học..." oninput="searchCourses()" />
                 </div>
-                <div class="form-group">
-                    <label>Mã môn học cần hủy</label>
-                    <input id="cancel-course-id" type="text" placeholder="VD: IT001" />
-                </div>
-                <button class="btn btn-danger" onclick="cancelCourse()">❌ Hủy đăng ký</button>
+                <button class="btn btn-gray" onclick="loadCourses()">🔄 Tải lại</button>
             </div>
+            <div id="courses-alert"></div>
+            <div id="courses-table"><div class="loading">Đang tải dữ liệu...</div></div>
         </div>
 
         <div class="card" style="background:#fffbeb;border:1px solid #fcd34d">
@@ -166,6 +150,7 @@
         </div>
     </div>
 
+    <!-- PAGE 2: MÔN CỦA TÔI & TÍCH HỢP HỦY ĐĂNG KÝ -->
     <div class="page" id="page-my-courses">
         <div class="card">
             <h2>🎓 Xem Môn Đã Đăng Ký</h2>
@@ -178,6 +163,9 @@
             </div>
         </div>
 
+        <!-- Alert tổng cho màn hình hủy và xem môn -->
+        <div id="my-courses-alert" class="alert" style="max-width: 1100px; margin: 0 auto 1.25rem auto;"></div>
+
         <div id="my-courses-result" style="display:none">
             <div class="card">
                 <h2 id="my-courses-name">Sinh viên</h2>
@@ -186,7 +174,6 @@
                     <span id="credit-text" style="font-size:18px;font-weight:700;color:#1a56db"></span>
                     <div style="flex:1"><div class="credit-bar-wrap"><div class="credit-bar" id="credit-bar"></div></div></div>
                 </div>
-                <div id="my-courses-alert" class="alert"></div>
                 <div id="my-courses-table"></div>
             </div>
         </div>
@@ -207,7 +194,10 @@
             event.target.classList.add('active');
         }
 
-        if (name === 'register') loadStudents();
+        if (name === 'courses') {
+            loadCourses();
+            loadStudents();
+        }
     }
 
     // ===== ALERT =====
@@ -278,7 +268,7 @@
         renderCourses(filtered);
     }
 
-    // ===== PAGE 2: DANG KY =====
+    // ===== SINH VIÊN MẪU =====
     async function loadStudents() {
         try {
             const res = await fetch(API + '/students');
@@ -296,6 +286,7 @@
         } catch(e) {}
     }
 
+    // ===== ĐĂNG KÝ MÔN HỌC =====
     async function registerCourse() {
         const studentId = document.getElementById('reg-student-id').value.trim();
         const courseId  = document.getElementById('reg-course-id').value.trim();
@@ -304,7 +295,6 @@
             return;
         }
         try {
-            // Đã chỉnh sửa: Gửi theo đường dẫn /api/registration/{studentId}/register nhận dạng Restful
             const res = await fetch(`${API}/registration/${studentId}/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -322,43 +312,22 @@
         }
     }
 
-    async function cancelCourse() {
-        const studentId = document.getElementById('cancel-student-id').value.trim();
-        const courseId  = document.getElementById('cancel-course-id').value.trim();
-        if (!studentId || !courseId) {
-            showAlert('cancel-alert', 'Vui lòng nhập đầy đủ thông tin', 'error');
-            return;
-        }
-        try {
-            // Đã chỉnh sửa: Chuyển sang dùng method DELETE tới endpoint /{studentId}/cancel/{courseId}
-            const res = await fetch(`${API}/registration/${studentId}/cancel/${courseId}`, {
-                method: 'DELETE'
-            });
-            const data = await res.json();
-            if (res.ok) {
-                showAlert('cancel-alert', '✅ ' + data.message, 'success');
-                loadCourses();
-            } else {
-                showAlert('cancel-alert', '❌ ' + (data.error || data.message), 'error');
-            }
-        } catch(e) {
-            showAlert('cancel-alert', '❌ Không kết nối được server', 'error');
-        }
-    }
-
-    // ===== PAGE 3: MON DA DANG KY =====
+    // ===== PAGE 2: MÔN ĐÃ ĐĂNG KÝ & NÚT HỦY TỰ ĐỘNG =====
     async function loadMyCoures() {
         const studentId = document.getElementById('my-student-id').value.trim();
-        if (!studentId) return;
+        if (!studentId) {
+            showAlert('my-courses-alert', 'Vui lòng nhập mã sinh viên cần tra cứu', 'error');
+            return;
+        }
         try {
             const res = await fetch(API + '/registration/' + studentId);
             const data = await res.json();
             if (!res.ok) {
-                showAlert('my-courses-alert', '❌ ' + data.error, 'error');
+                showAlert('my-courses-alert', '❌ ' + (data.error || 'Không tìm thấy sinh viên'), 'error');
+                document.getElementById('my-courses-result').style.display = 'none';
                 return;
             }
 
-            // Đã chỉnh sửa: Đọc chính xác cấu trúc Model gốc từ biến trả về của Spring Boot
             const student = data.student;
             const details = data.details || [];
 
@@ -366,7 +335,6 @@
             document.getElementById('my-courses-name').textContent =
                 `🎓 Môn đã đăng ký — Sinh viên: ${student ? student.fullName : studentId} (${studentId})`;
 
-            // Tính tổng tín chỉ hiện tại từ mảng details (RegistrationDetail -> List<Registration>)
             let totalCredits = 0;
             for(const row of details) {
                 if(row.course) totalCredits += row.course.credits;
@@ -384,10 +352,11 @@
                 return;
             }
 
+            // Thêm cột "Hành động" vào header bảng
             let html = `<table>
       <thead><tr>
         <th>Mã môn</th><th>Tên môn học</th><th>Tín chỉ</th>
-        <th>Giảng viên</th><th>Lịch học</th>
+        <th>Giảng viên</th><th>Lịch học</th><th style="text-align:center">Hành động</th>
       </tr></thead><tbody>`;
 
             for (const row of details) {
@@ -395,12 +364,17 @@
                 if (!c) continue;
                 const sch = c.schedule;
                 const scheduleStr = sch ? `Thứ ${sch.dayOfWeek}, tiết ${sch.startPeriod}–${sch.endPeriod}` : '—';
+
+                // Thêm nút Hủy đăng ký truyền trực tiếp mã SV và mã Môn của hàng đó
                 html += `<tr>
         <td><strong>${c.courseId}</strong></td>
         <td>${c.courseName}</td>
         <td style="text-align:center">${c.credits}</td>
         <td>${c.lecturer ? c.lecturer.fullName : '—'}</td>
         <td>${scheduleStr}</td>
+        <td style="text-align:center">
+            <button class="btn btn-danger btn-sm" onclick="cancelCourse('${studentId}', '${c.courseId}')">❌ Hủy</button>
+        </td>
       </tr>`;
             }
             html += '</tbody></table>';
@@ -410,8 +384,31 @@
         }
     }
 
+    // Hàm hủy đăng ký được tối ưu nhận tham số động từ bảng kết quả tra cứu
+    async function cancelCourse(studentId, courseId) {
+        if (!confirm(`Bạn có chắc chắn muốn hủy đăng ký môn học ${courseId}?`)) {
+            return;
+        }
+        try {
+            const res = await fetch(`${API}/registration/${studentId}/cancel/${courseId}`, {
+                method: 'DELETE'
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showAlert('my-courses-alert', '✅ ' + data.message, 'success');
+                // Tải lại danh sách môn đã đăng ký của sinh viên này để cập nhật giao diện ngay lập tức
+                loadMyCoures();
+            } else {
+                showAlert('my-courses-alert', '❌ ' + (data.error || data.message), 'error');
+            }
+        } catch(e) {
+            showAlert('my-courses-alert', '❌ Không kết nối được server', 'error');
+        }
+    }
+
     // ===== INIT =====
     loadCourses();
+    loadStudents();
 </script>
 </body>
 </html>
