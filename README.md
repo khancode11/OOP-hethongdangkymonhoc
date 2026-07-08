@@ -1,60 +1,179 @@
-# Hệ Thống Đăng Ký Môn Học Cho Sinh Viên (Phiên bản Web REST API & Spring Boot)
+# 📚 Hệ thống Đăng ký Môn học
 
-## Giới thiệu
-
-Đây là dự án cuối kỳ môn Lập Trình Hướng Đối Tượng (OOP) nâng cao, được phát triển từ nền tảng Java OOP thuần và nâng cấp lên kiến trúc hệ thống Web sử dụng **Spring Boot (Backend)** kết hợp với **HTML5/JavaScript (Frontend)**.
-
-Hệ thống mô phỏng quy trình đăng ký môn học trực tuyến của sinh viên trong một học kỳ. Sinh viên tương tác trực tiếp trên giao diện Web để xem danh sách môn học, đăng ký, hủy môn và theo dõi tiến độ tín chỉ theo thời gian thực (Real-time).
+Hệ thống đăng ký môn học được xây dựng bằng **Spring Boot**, sử dụng **File IO** để lưu trữ dữ liệu và cung cấp các **RESTful API** phục vụ chức năng đăng ký, hủy đăng ký và tra cứu thông tin môn học.
 
 ---
 
-## Chức năng chính
+# 🚀 Công nghệ sử dụng
 
-### Giao diện Sinh viên (Frontend Web UI)
-* **Môn học**: Xem danh sách các môn học đang mở kèm sĩ số, lịch học, trạng thái còn chỗ/hết chỗ; tìm kiếm môn học trực quan.
-* **Đăng ký**: Nhập Mã SV + Mã môn để đăng ký môn học trực tuyến. Hệ thống tự động kiểm tra điều kiện nghiệp vụ và báo lỗi trực tiếp trên giao diện nếu vi phạm.
-* **Môn của tôi**: Xem danh sách các môn đã đăng ký thành công của cá nhân và thanh tiến độ tổng số tín chỉ tích lũy (Credit Progress Bar).
-
-### Hệ thống Quản lý và Nghiệp vụ (Backend REST API)
-* Đọc/Ghi và đồng bộ dữ liệu sinh viên, môn học lâu dài thông qua các file văn bản cơ sở (`students.txt`, `courses.txt`).
-* Kiểm tra toàn diện các ràng buộc logic chặt chẽ (Validations):
-    * Môn học có tồn tại trên hệ thống hay không.
-    * Lớp học còn chỗ (Sĩ số < Số lượng tối đa) hay không.
-    * Sinh viên đã đăng ký môn học này trước đó chưa.
-    * Kiểm tra vượt quá giới hạn số tín chỉ tối đa (`maxCredits`) cấu hình riêng cho từng sinh viên.
-    * Kiểm tra trùng lịch học dựa trên thuật toán so khớp khoảng tiết học (`Schedule.isConflict`).
+- Java 17+
+- Spring Boot
+- Maven
+- Swagger UI
+- REST API
+- File IO (JSON)
 
 ---
 
-## Công nghệ sử dụng
+# 📁 Cấu trúc API
 
-* **Backend**: Java 17+, Spring Boot (REST Web Services, Dependency Injection, IoC Container)
-* **Build Tool**: Apache Maven
-* **Frontend**: HTML5, CSS3, JavaScript (Fetch API để giao tiếp dữ liệu asynchronous không cần tải lại trang)
-* **OOP & Clean Code**: Kế thừa (Inheritance), Đa hình xử lý lỗi ngoại lệ (Polymorphism Custom Exceptions), Collections Framework, File IO mã hóa UTF-8.
-* **Quản lý mã nguồn**: Git & GitHub
+| Phương thức | Endpoint | Chức năng | Tham số / Body |
+|-------------|----------|-----------|----------------|
+| **GET** | `/api/courses` | Lấy danh sách môn học hoặc tìm kiếm | `?search=keyword` *(tùy chọn)* |
+| **GET** | `/api/students` | Lấy danh sách sinh viên mẫu | Không |
+| **GET** | `/api/registration/{studentId}` | Xem phiếu đăng ký của sinh viên | `studentId` trên URL |
+| **POST** | `/api/registration/{studentId}/register` | Đăng ký môn học | ```json { "courseId": "Mã_Môn" } ``` |
+| **DELETE** | `/api/registration/{studentId}/cancel/{courseId}` | Hủy đăng ký môn học | `studentId`, `courseId` trên URL |
 
 ---
 
-## Cấu trúc Project thực tế (Maven Standard)
+# 📖 Swagger UI
 
-```text
-StudentRegistrationSystem
-├── src/
-│   └── main/
-│       ├── java/
-│       │   └── com/
-│       │       └── example/
-│       │           └── registration/
-│       │               ├── controller/  (Xử lý Rest Endpoints API)
-│       │               ├── exception/   (Chứa các Custom Exception)
-│       │               ├── model/       (Lớp dữ liệu thực thể OOP)
-│       │               ├── repository/  (Đọc/Ghi dữ liệu file .txt)
-│       │               ├── service/     (Xử lý logic nghiệp vụ xử lý phiếu)
-│       │               └── Main.java    (File chạy chính ứng dụng Spring Boot)
-│       └── resources/
-│           └── static/
-│               └── index.html (Giao diện Frontend ứng dụng Web)
-├── courses.txt  (Cơ sở dữ liệu lưu trữ môn học)
-├── students.txt (Cơ sở dữ liệu lưu trữ sinh viên)
-└── pom.xml      (Quản lý thư viện và dependencies của dự án)
+Hệ thống đã tích hợp **Swagger UI** để kiểm tra và nghiệm thu toàn bộ API.
+
+Sau khi chạy chương trình, truy cập:
+
+> **http://localhost:8080/swagger-ui/index.html**
+
+Tại đây có thể:
+
+- Xem toàn bộ API
+- Chọn **Try it out**
+- Nhập dữ liệu
+- Chọn **Execute**
+- Xem kết quả trả về trực tiếp từ hệ thống
+
+---
+
+# ▶️ Hướng dẫn chạy chương trình
+
+## Cách 1. Chạy bằng IntelliJ IDEA
+
+### Bước 1
+
+Clone project hoặc giải nén source code.
+
+### Bước 2
+
+Mở IntelliJ IDEA.
+
+Chọn
+
+```
+Open
+```
+
+và mở thư mục chứa file
+
+```
+pom.xml
+```
+
+### Bước 3
+
+Đợi Maven tải dependency.
+
+Sau đó chuột phải vào
+
+```
+pom.xml
+```
+
+chọn
+
+```
+Maven
+→ Reload Project
+```
+
+### Bước 4
+
+Đi tới
+
+```
+src/main/java/com/example/registration/Main.java
+```
+
+### Bước 5
+
+Nhấn nút **Run (▶)** để khởi động ứng dụng.
+
+---
+
+## Cách 2. Chạy bằng Terminal
+
+### Build project
+
+```bash
+mvn clean package -DskipTests
+```
+
+### Chạy ứng dụng
+
+```bash
+java -jar target/dangkymonhoc-1.0.0.jar
+```
+
+---
+
+# 🌐 Truy cập hệ thống
+
+Sau khi server chạy thành công trên cổng **8080**, mở trình duyệt và truy cập:
+
+## Giao diện đăng ký môn học
+
+```
+http://localhost:8080/index.html
+```
+
+## Swagger UI
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+---
+
+# 📂 Chức năng chính
+
+- Xem danh sách môn học
+- Tìm kiếm môn học
+- Xem danh sách sinh viên
+- Xem phiếu đăng ký
+- Đăng ký môn học
+- Hủy đăng ký môn học
+- Lưu dữ liệu bằng File IO
+- Kiểm tra API bằng Swagger UI
+
+---
+
+# 👥 Thành viên thực hiện
+
+**Nhóm 02**
+
+**Giảng viên hướng dẫn**
+
+> Thầy Trần Đình Nam Sơn
+
+| Vai trò | Thành viên | MSSV | Nhiệm vụ |
+|----------|------------|------|----------|
+| Trưởng nhóm | Điêu Văn Khản | 23010131 | Thiết kế hệ thống, Model Layer, Class Diagram, Tích hợp Service & API |
+| Thành viên | Phạm Đức Nguyên | | Service Layer, Cài đặt Business Rules |
+| Thành viên | Vũ Tiến Đạt | | Validator Layer, Interface, Custom Exception |
+| Thành viên | Đào Minh Nghĩa | | Repository Layer, File IO, ClassPathResource |
+| Thành viên | Bùi Việt Hùng | | Main Program, Frontend Web UI, Tài liệu, Test Cases |
+
+---
+
+# 📌 Ghi chú
+
+- Ứng dụng sử dụng **Spring Boot Embedded Tomcat**.
+- Dữ liệu được lưu bằng **File IO**.
+- Toàn bộ API có thể kiểm thử trực tiếp trên **Swagger UI**.
+- Không cần cài đặt máy chủ bên ngoài.
+
+---
+
+# 📄 License
+
+Dự án phục vụ mục đích học tập và nghiên cứu.
